@@ -35,22 +35,12 @@ Peter Chan
 
 # Generate .eml files
 for entry in dataSet:
+    # Convert list of TO emails to a comma-separated string
     # Convert list of CC emails to a comma-separated string
     # Handle cases where "cc" might be missing
     to_list = ", ".join(entry.get("to", []))
-
-    # Convert list of CC emails to a comma-separated string
-    # Handle cases where "cc" might be missing
     cc_list = ", ".join(entry.get("cc", []))
     
-    # Replace placeholders in the email template
-    # email_content = (
-    #     email_template
-    #     .replace("{username}", entry["username"])
-    #     .replace("{goh}", entry["goh"])
-    #     .replace("", cc_list)
-    # )
-
     # Replace placeholders in the email template using the format() method
     email_content = email_template.format(
         username = entry["username"],
