@@ -2,7 +2,7 @@ import json
 import os
 
 # Directory to save .eml files
-output_dir = "eml_folder"
+output_dir = "eml_output"
 os.makedirs(output_dir, exist_ok=True)
 
 # Sample JSON data with multiple CC recipients
