@@ -14,10 +14,12 @@ data = {
     ]
 }
 
-# Set the email title, sender, and attachment file path
+# Set the email title and sender
 email_title = "Important Announcement"
 email_sender = "sender1@example.com"
-attachment_path = "../attachment/dummy.pdf"  # Single attachment
+
+# List of attachment file paths
+attachments = ["../attachment/dummy.pdf"]  # Add more file paths to this list for multiple attachments
 
 # Email content template
 email_body_template = """Dear {username},
@@ -28,7 +30,7 @@ Best Regards,
 Peter Chan
 """
 
-# Generate .eml files with a single attachment and organize them by company
+# Generate .eml files with attachments and organize them by company
 for company, employees in data.items():
     # Create directory for the company
     company_dir = os.path.join("output", company)
@@ -49,18 +51,19 @@ for company, employees in data.items():
         )
         email_msg.set_content(email_body)
 
-        # Add a single attachment if it exists
-        if os.path.exists(attachment_path):  # Check if file exists
-            mime_type, _ = mimetypes.guess_type(attachment_path)
-            mime_type = mime_type or "application/octet-stream"
+        # Add attachments
+        for attachment_path in attachments:
+            if os.path.exists(attachment_path):  # Check if file exists
+                mime_type, _ = mimetypes.guess_type(attachment_path)
+                mime_type = mime_type or "application/octet-stream"
 
-            with open(attachment_path, "rb") as f:
-                file_data = f.read()
-                file_name = os.path.basename(attachment_path)
+                with open(attachment_path, "rb") as f:
+                    file_data = f.read()
+                    file_name = os.path.basename(attachment_path)
 
-            email_msg.add_attachment(file_data, maintype=mime_type.split('/')[0], subtype=mime_type.split('/')[1], filename=file_name)
-        else:
-            print(f"Warning: Attachment '{attachment_path}' not found. Skipping...")
+                email_msg.add_attachment(file_data, maintype=mime_type.split('/')[0], subtype=mime_type.split('/')[1], filename=file_name)
+            else:
+                print(f"Warning: Attachment '{attachment_path}' not found. Skipping...")
 
         # Define the .eml file path
         filename = os.path.join(company_dir, f"{entry['username']}.eml")

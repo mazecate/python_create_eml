@@ -22,10 +22,12 @@ dataSet = [
     },
 ]
 
-# Set the email title, sender, and attachment file path
+# Set the email title and sender
 email_title = "Important Announcement"
 email_sender = "sender1@example.com"
-attachment_path = "attachment/dummy.pdf"  # Single attachment
+
+# List of attachments to add to all emails
+attachments = ["attachment/dummy.pdf", "attachment/dummy_02.pdf"]
 
 # Email content template
 email_body_template = """Dear {username},
@@ -36,7 +38,7 @@ Best Regards,
 Peter Chan
 """
 
-# Generate .eml files with a single attachment
+# Generate .eml files with multiple attachments
 for entry in dataSet:
     # Create email message
     email_msg = EmailMessage()
@@ -52,18 +54,19 @@ for entry in dataSet:
     )
     email_msg.set_content(email_body)
 
-    # Add a single attachment if it exists
-    if os.path.exists(attachment_path):  # Check if file exists
-        mime_type, _ = mimetypes.guess_type(attachment_path)
-        mime_type = mime_type or "application/octet-stream"
+    # Add attachments if they exist
+    for attachment_path in attachments:
+        if os.path.exists(attachment_path):  # Check if file exists
+            mime_type, _ = mimetypes.guess_type(attachment_path)
+            mime_type = mime_type or "application/octet-stream"
 
-        with open(attachment_path, "rb") as f:
-            file_data = f.read()
-            file_name = os.path.basename(attachment_path)
+            with open(attachment_path, "rb") as f:
+                file_data = f.read()
+                file_name = os.path.basename(attachment_path)
 
-        email_msg.add_attachment(file_data, maintype=mime_type.split('/')[0], subtype=mime_type.split('/')[1], filename=file_name)
-    else:
-        print(f"Warning: Attachment '{attachment_path}' not found. Skipping...")
+            email_msg.add_attachment(file_data, maintype=mime_type.split('/')[0], subtype=mime_type.split('/')[1], filename=file_name)
+        else:
+            print(f"Warning: Attachment '{attachment_path}' not found. Skipping...")
 
     # Define the .eml file path
     filename = os.path.join(output_dir, f"{entry['username']}.eml")
