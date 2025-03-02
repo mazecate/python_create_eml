@@ -1,4 +1,4 @@
-# python_create_eml
+# Python create eml
 
 Create .eml file for send email
 
