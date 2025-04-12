@@ -1,18 +1,25 @@
 import os
 import mimetypes
 from email.message import EmailMessage
+import pandas as pd
 
-# Sample data
-data = {
-    "CompanyA": [
-        {"username": "Peter Chan", "goh": "Mr. John Lam", "to": ["recipient1@example.com", "recipient2@example.com"], "cc": ["cc1@example.com", "cc2@example.com"]},
-        {"username": "Alice Tan", "goh": "Mr. John Lam", "to": ["recipient2@example.com"], "cc": ["cc3@example.com"]},
-    ],
-    "CompanyB": [
-        {"username": "John Doe", "goh": "Mr. John Lam", "to": ["recipient3@example.com"], "cc": ["cc4@example.com", "cc5@example.com"]},
-        {"username": "Jane Smith", "goh": "Mr. John Lam", "to": ["recipient4@example.com"], "cc": ["cc6@example.com"]},
-    ]
-}
+# Read CSV file
+csv_file = "sample.csv"
+df = pd.read_csv(csv_file)
+
+# Convert CSV data to the required dictionary format
+data = {}
+for org, group in df.groupby("Organization"):
+    employees = []
+    for _, row in group.iterrows():
+        employee = {
+            "username": row["Name"],
+            "goh": row["Goh"],
+            "to": row["Email"].split(",") if pd.notna(row["Email"]) else [],
+            "cc": row["CC"].split(",") if pd.notna(row["CC"]) else []
+        }
+        employees.append(employee)
+    data[org] = employees
 
 # Set the email title and sender
 email_title = "Important Announcement"
